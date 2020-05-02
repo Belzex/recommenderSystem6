@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Recommendation Page</title>
+</head>
+<body>
+The top-20 recommendations for the selected user ({{ id }}):
+<br>
+{% for movie in list %}
+    <ul>
+        <li>Name: {{ movie.Title }}</li>
+        <li>Genre: {{ movie.Genres }}</li>
+    </ul>
+    <br>
+{% endfor %}
+
+</body>
+</html>

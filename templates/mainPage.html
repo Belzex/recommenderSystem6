@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome page</title>
+</head>
+<body>
+Please select one user (ID) of the MovieLens dataset.
+<br>
+<br>
+<form action="" method="post">
+    <!-- Necessary to have an CSRF Token so the form is secured -->
+    {% csrf_token %}
+    <!-- Only allow for number input: Name is used to reference -->
+    <input type="number" id="idUser" name="idUserField">
+    <br>
+    <br>
+    <input type="submit">
+</form>
+</body>
+</html>
