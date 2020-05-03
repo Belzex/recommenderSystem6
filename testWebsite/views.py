@@ -8,13 +8,14 @@ def home(request):
     if request.method == 'POST':
         data = request.POST.copy()
         id = data.get('idUserField')
-        print(id)
+        id=int(id)
         nn = NearestNeighbors()
         list = nn.nearestNeighborRecommendation(id)
         dict = list.to_dict('records')
         print(dict)
-        return render(request, "recommendationPage.html", {'id':id, 'list': dict})
+        return render(request, "recommendationPage.html", {'id': id, 'list': dict})
     return render(request, "mainPage.html", {})
+
 
 def recommendation(request):
     return render(request, "recommendationPage.html", {})
