@@ -5,6 +5,7 @@ import concurrent.futures
 import csv
 import ast
 import os
+import re
 
 MOVIE_DF_COLUMNS: list = ['MovieID', 'Title', 'Genres']
 RATINGS_DF_COLUMNS: list = ['UserID', 'MovieID', 'Rating', 'Timestamp']
@@ -15,12 +16,14 @@ class NearestNeighbors:
     movieDF = pd.DataFrame(columns=MOVIE_DF_COLUMNS)
     ratingsDF = pd.DataFrame(columns=RATINGS_DF_COLUMNS)
     usersDF = pd.DataFrame(columns=USER_DF_COLUMNS)
+    meta_data = pd.DataFrame()
     simUsersDict = dict()
 
     def __init__(self, userDF: pd.DataFrame = None, ratingsDF: pd.DataFrame = None, movieDF: pd.DataFrame = None):
         moviesPath = os.path.join(MOVIELENS_ROOT, 'movies.dat')
         ratingsPath = os.path.join(MOVIELENS_ROOT, 'ratings.dat')
         usersPath = os.path.join(MOVIELENS_ROOT, 'users.dat')
+        meta_data_path = os.path.join(MOVIELENS_ROOT, 'movies_metadata.csv')
         self.simUsersDict = self.read()
         try:
             if userDF is None:
@@ -47,6 +50,9 @@ class NearestNeighbors:
                                            engine='python').head(16)
             else:
                 self.movieDF = movieDF
+            self.meta_data = pd.read_csv(meta_data_path,
+                                       engine='python').head(16)
+            self.meta_data=self.meta_data[['overview', 'poster_path', 'original_title']].copy()
 
         except FileNotFoundError:
             print("Could not find file")
@@ -193,9 +199,19 @@ class NearestNeighbors:
         d = {}
         with open(os.path.join(MOVIELENS_ROOT, 'simUsers.csv')) as f:
             for line in f:
-                key , val = line.split(",", 1)
-                val=val.strip('"')
-                val=ast.literal_eval(val)
-                d[int(key)] = val
+                if 'EOF' not in line:
+                    key, val = line.split(",", 1)
+                    val = val.rstrip()
+                    val = val.strip('"')
+                    val = ast.literal_eval(val)
+                    d[int(key)] = val
         return d
-
+    def getMetaData(self, movieList):
+        movieDF=list()
+        for index, movie in movieList.iterrows():
+            title=movie['Title']
+            title=re.sub(r'\(.*\d*.*\)', '', title)
+            title=title.rstrip()
+            movieDF.append(self.meta_data.query('original_title' + ' == \'' + title+'\'').to_dict('records'))
+        print(movieDF)
+        return movieDF

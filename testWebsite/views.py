@@ -11,8 +11,15 @@ def home(request):
         id=int(id)
         nn = NearestNeighbors()
         list = nn.nearestNeighborRecommendation(id)
+        meta_dict=nn.getMetaData(list)
         dict = list.to_dict('records')
         print(dict)
+        i=0
+        for d in dict:
+            a=meta_dict[i]
+            if len(a)>0:
+                d.update(a[0])
+            i+=1
         return render(request, "recommendationPage.html", {'id': id, 'list': dict})
     return render(request, "mainPage.html", {})
 
