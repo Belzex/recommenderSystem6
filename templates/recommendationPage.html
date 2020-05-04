@@ -12,7 +12,7 @@ The top-20 recommendations for the selected user ({{ id }}):
         <li>Name: {{ movie.Title }}</li>
         <li>Genre: {{ movie.Genres }}</li>
         <li>Overview: {{ movie.overview }}</li>
-        <li>Poster: {{ movie.poster_path }}</li>
+        <img src={{ "https://image.tmdb.org/t/p/w500" }}{{ movie.poster_path }} }} , style="width:256px;height:256px;">
     </ul>
     <br>
 {% endfor %}

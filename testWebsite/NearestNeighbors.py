@@ -51,8 +51,8 @@ class NearestNeighbors:
             else:
                 self.movieDF = movieDF
             self.meta_data = pd.read_csv(meta_data_path,
-                                       engine='python').head(16)
-            self.meta_data=self.meta_data[['overview', 'poster_path', 'original_title']].copy()
+                                         engine='python').head(16)
+            self.meta_data = self.meta_data[['overview', 'poster_path', 'original_title']].copy()
 
         except FileNotFoundError:
             print("Could not find file")
@@ -130,7 +130,7 @@ class NearestNeighbors:
     def computeSimilarity(self, userID: int, neighborhoodSize: int):
         if userID in self.simUsersDict:
             return self.simUsersDict[userID][:neighborhoodSize]
-        print('fail')
+        print('failed to retrieve current user from similarUsersDict')
         # Calculate the similarity of users with the pearson correlation
         # Returns - list of similarity values between the user and other users
         currentUserRated = self.getMoviesTheUserRated(userID)
@@ -206,12 +206,13 @@ class NearestNeighbors:
                     val = ast.literal_eval(val)
                     d[int(key)] = val
         return d
+
     def getMetaData(self, movieList):
-        movieDF=list()
+        movieDF = list()
         for index, movie in movieList.iterrows():
-            title=movie['Title']
-            title=re.sub(r'\(.*\d*.*\)', '', title)
-            title=title.rstrip()
-            movieDF.append(self.meta_data.query('original_title' + ' == \'' + title+'\'').to_dict('records'))
-        print(movieDF)
+            title = movie['Title']
+            title = re.sub(r'\(.*\d*.*\)', '', title)
+            title = title.rstrip()
+            movieDF.append(self.meta_data.query('original_title' + ' == \'' + title + '\'').to_dict('records'))
+        # print(movieDF)
         return movieDF
